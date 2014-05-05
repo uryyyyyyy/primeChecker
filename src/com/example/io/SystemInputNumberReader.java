@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class SystemNumberReader implements NumberReader{
+public class SystemInputNumberReader implements SystemInputReader{
 
 	private final Logger logger = Logger.getLogger("SystemNumberLoader");
 
 	@Override
-	public List<Integer> readAll(List<String> inputs){		
+	public List<Integer> toInteger(List<String> inputs){		
 		checkAboveMaxValue(inputs);
 		List<Integer> resultList = new ArrayList<Integer>(inputs.size());
 		int counter = 0;

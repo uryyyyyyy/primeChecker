@@ -4,12 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.example.io.NumberReader;
-import com.example.io.NumberWriter;
-import com.example.io.SystemNumberReader;
-import com.example.io.SystemNumberWriter;
-import com.example.prime.PrimeCounter;
-import com.example.prime.PrimeCounterImpl;
+import com.example.io.SystemInputNumberReader;
+import com.example.io.SystemInputReader;
+import com.example.io.SystemWriter;
+import com.example.vo.NearestPrimeInts;
+import com.example.vo.PositiveInt;
 
 public class Main {
 
@@ -17,38 +16,67 @@ public class Main {
 		try{
 			final long startTime = System.currentTimeMillis();
 
-			System.out.println("入力値");
-			List<Integer> inputs = load(args);
-			List<Integer> outputs = execute(inputs);
-			System.out.println("出力値");
+			//参考用コメント まず、入力→計算→出力の大きな流れがあります。
+			List<PositiveInt> inputs = load(args);
+			List<NearestPrimeInts> outputs = execute(inputs);
 			write(outputs);
 
 			final long endTime = System.currentTimeMillis();
 			System.out.println(endTime - startTime + "ms かかりました。");
 		}catch(Exception e){
+			e.printStackTrace();
 			System.out.println("エラーです。ログを確認してください。");
 		}
 	}
 
-	private static void write(List<Integer> intList) {
-		NumberWriter output = new SystemNumberWriter();
+	private static void write(List<NearestPrimeInts> intList) {
+		System.out.println("出力");
+		SystemWriter<NearestPrimeInts> output = new SystemWriter<NearestPrimeInts>(){
+
+			@Override
+			public void writeAll(List<NearestPrimeInts> list) {
+				for (NearestPrimeInts i : list) {
+					System.out.println(i.getLargerNum().get() + " " + i.getSmallerNum().get());
+				}
+			}
+		};
 		output.writeAll(intList);
 	}
 
-	private static List<Integer> execute(final List<Integer> inputs) {
-		final List<Integer> resultList = new ArrayList<Integer>(inputs.size());
-		for (Integer num : inputs) {
-			PrimeCounter logic = new PrimeCounterImpl();//PrimeCounterImpl2もあるよ
-			int result = logic.countPrimeNumber(num);
-			resultList.add(result);
+	/**
+	 * 参考用コメント 
+	 * 
+	 * @param inputs
+	 * @return List<NearestPrimeInts>
+	 */
+	private static List<NearestPrimeInts> execute(final List<PositiveInt> inputs) {
+		final List<NearestPrimeInts> resultList = new ArrayList<NearestPrimeInts>(inputs.size());
+		for (PositiveInt i : inputs) {
+			resultList.add(new NearestPrimeInts(i));
 		}
 		return resultList;
 	}
-
-	private static List<Integer> load(final String[] args) {
-		final NumberReader input = new SystemNumberReader();
-		final List<String> list= Arrays.asList(args);
-		return input.readAll(list);
+	
+	/**
+	 * 参考用コメント 入力では、標準入力のバリデーションチェックと型安全な形に持っていきます。
+	 * 参考用コメント 再利用性を考えて実装しています
+	 * 
+	 * @param args
+	 * @return List<PositiveInt>
+	 */
+	private static List<PositiveInt> load(final String[] args) {
+		System.out.println("入力");
+		final SystemInputReader reader = new SystemInputNumberReader();
+		//参考用コメント 再利用できそうなのでこのまま使っている。
+		List<Integer> list = reader.toInteger(Arrays.asList(args));
+		return convertToPositiveInt(list);
 	}
 
+	private static List<PositiveInt> convertToPositiveInt(List<Integer> list) {
+		List<PositiveInt> results = new ArrayList<PositiveInt>();
+		for(Integer i : list){
+			results.add(new PositiveInt(i));
+		}
+		return results;
+	}
 }

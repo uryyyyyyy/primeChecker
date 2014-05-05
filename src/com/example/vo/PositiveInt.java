@@ -1,6 +1,5 @@
 package com.example.vo;
 
-
 public class PositiveInt {
 	private final int i;
 

@@ -21,8 +21,8 @@ public class SystemInputNumberReader implements SystemInputReader{
 				counter++;
 			}
 		}catch(NumberFormatException e) {
-			e.printStackTrace();
 			logger.info(counter+1 + "個目の入力値 " + inputs.get(counter) + " はint型に変換できません");
+			throw e;
 		}
 		return resultList;
 	}
